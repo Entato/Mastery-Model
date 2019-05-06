@@ -89,10 +89,10 @@ public class masteryModelGUI extends Application {
     initScene = new Scene(addVBox(), 250, 200); 
     chartScene = new Scene(checklistLayout, 800, 600);
     chartScene2 = new Scene(checklistLayout2, 800, 600);
-    
+    /*
     chartScene.getStylesheets().add(getClass().getResource("grid-with-borders.css").toExternalForm());
     chartScene2.getStylesheets().add(getClass().getResource("grid-with-borders.css").toExternalForm());
-
+*/
     initWindow.setResizable(true);
     
     
