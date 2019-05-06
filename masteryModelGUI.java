@@ -22,6 +22,7 @@ public class masteryModelGUI extends Application {
   
   private TextField selectedTextField;
   TextField testText = new TextField();
+  TextField testText2 = new TextField();
   
   // "\u237B" unicode for cross check
   // "\u2713" unicode for check mark
@@ -70,14 +71,45 @@ public class masteryModelGUI extends Application {
     });
     //check button
     checkButton = new Button("\u2713");
+    checkButton.setFocusTraversable(false);
     
-    checkButton.setOnAction(e -> installListener(testText));
+    checkButton.setOnAction(e -> {
+      
+      Node fo = chartScene.getFocusOwner();
+      if (fo instanceof TextInputControl) {
+        ((TextInputControl) fo).replaceSelection("\u2713");
+      }
+        
+    });
+    
+    //cross button 
+    Button crossButton = new Button("\u2717");
+    crossButton.setFocusTraversable(false);
+    
+    crossButton.setOnAction(e -> {
+      Node fo = chartScene.getFocusOwner();
+      if (fo instanceof TextInputControl) {
+        ((TextInputControl) fo).replaceSelection("\u2717");
+      }
+      
+    });
+    
+    //cross check button
+    Button crossCheckButton = new Button("\u237B");
+    crossCheckButton.setFocusTraversable(false);
+    crossCheckButton.setOnAction(e -> {
+      Node fo = chartScene.getFocusOwner();
+      if (fo instanceof TextInputControl) {
+        ((TextInputControl) fo).replaceSelection("\u237B");
+      }
+      
+    });
       
     BorderPane checklistLayout = new BorderPane();
     checklistLayout.setPadding(new Insets(20, 20, 20, 20));
     checklistLayout.setCenter(addGridPane());
     checklistLayout.setBottom(nextButton);
-    checklistLayout.setRight(checkButton);
+    checklistLayout.setRight(addgridVBox(checkButton, crossButton, crossCheckButton));
     
     BorderPane checklistLayout2 = new BorderPane();
     checklistLayout2.setPadding(new Insets(20, 20, 20, 20));
@@ -243,6 +275,7 @@ public class masteryModelGUI extends Application {
     
     //score labels that hold checks
     chartGrid.add(testText,1,1,1,1); 
+    chartGrid.add(testText2,2,1,1,1); 
     
     
     
@@ -333,23 +366,18 @@ public class masteryModelGUI extends Application {
     
   }
   
-  private void installListener(TextField testText) {
-    testText.focusedProperty().addListener((observableValue, oldValue, newValue) -> {
-      
-      // Set the selectedTextField to null whenever focus is lost. This accounts for the 
-      // TextField losing focus to another control that is NOT a TextField
-      selectedTextField = null;
-
-      if (newValue) {
-        // The new textfield is focused, so set the global reference
-        selectedTextField = testText;
-        System.out.println("Selected Text: " + selectedTextField.getText());
-        String text = testText.getText();
-        testText.setText(text += "\u2713");
-      }
-    });
+  
+  public VBox addgridVBox(Button checkButton, Button crossButton, Button crossCheckButton) {
+    VBox gridVBox = new VBox(20);
+    gridVBox.setPadding(new Insets(20,20,20,20));
+    
+    gridVBox.getChildren().addAll(checkButton, crossButton, crossCheckButton);
+    
+    return gridVBox;
+    
+    
+                        
   }
-   
   
  
   
