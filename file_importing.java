@@ -1,5 +1,4 @@
 //Imports packages/modules required
-//import java.nio.file.*; not being used currently
 import java.io.*;
 import java.util.*;
 
@@ -17,6 +16,7 @@ class file_importing{
       System.exit(0); //Terminates program
     }
     
+//STUDENT INFO FILE CSV READING ---------------------------------------------------------------------------------------
     ArrayList<String[]> student_csv_Storer = new ArrayList<String[]>(); //Initializes ArrayList that stores csv data
     try {
       File student_info = new File(MainFolderPath + "\\Student Info.csv"); //Finds the student info file
@@ -34,6 +34,7 @@ class file_importing{
       System.out.println("A file was not found.");
     }
     
+//STUDENT FOLDER CREATION ---------------------------------------------------------------------------------------------
     //Creates a folder for each student
     for (int i = 0; i < student_csv_Storer.size(); i++){
       //Creates a folder named after the student's number
@@ -41,6 +42,7 @@ class file_importing{
       boolean studentCreated = StudentFolder.mkdirs();    
     }
     
+//CHART TEMPLATE FILE CSV READING -------------------------------------------------------------------------------------
     ArrayList<String[]> chart_template_Storer = new ArrayList<String[]>(); //Initializes ArrayList that stores the chart template
     try{
       File chart_Template = new File(MainFolderPath + "\\Assessment Chart.csv"); //Finds the chart template
@@ -57,7 +59,6 @@ class file_importing{
       System.out.println("A file was not found.");
     }
     
-    //Prints out content of the csv for testing purposes
     for (int i = 0; i < chart_template_Storer.size(); i++){
       for (int j = 0; j < chart_template_Storer.get(i).length; j++){
         //Replaces the temporary characters with it's old character
@@ -67,41 +68,39 @@ class file_importing{
       System.out.println("_______________________________________________________________________");
     }
     
+//STUDENT SELECTION----------------------------------------------------------------------------------------------------
     //Finds the index number of a student in the array
-    Scanner input = new Scanner(System.in);
+    Scanner input = new Scanner(System.in); //Temporary Scanner to simulate dropdown menu selection
     String name_Input = input.nextLine();
     int index_number = 0;
     
+    //Checks for the student in the array
     for (int i = 0; i < student_csv_Storer.size(); i++){
       if (name_Input.equals(student_csv_Storer.get(i)[1] + ", " + student_csv_Storer.get(i)[2])){
-        index_number = i;
+        index_number = i; //Saves which array the student is stored in
+        break;
       }
     }
+    input.close();
+    //Obtains the path of the student
     String student_Path = (MainFolderPath + "\\" + student_csv_Storer.get(index_number)[0]);
     System.out.println(student_Path);
     
-    //_____________TEST PORTION______________________________________________
-    File Test_File = new File(MainFolderPath + "\\Test_File.csv");
-    
-    if (Test_File.createNewFile()){
-      System.out.println("FILE CREATED!");
+//INDIVIDUAL CHART CREATION--------------------------------------------------------------------------------------------
+    for (int i = 0; i < student_csv_Storer.size(); i++){
+      //Creates a csv chart template for each student
+      File student_Chart = new File(MainFolderPath + "\\" + student_csv_Storer.get(i)[0] + "\\" 
+                                      + student_csv_Storer.get(i)[1] + ", " + student_csv_Storer.get(i)[2] + ".csv");
+      //Writer set to false so that each write would overwrite its contents
+      FileWriter writer = new FileWriter(student_Chart, false); 
+      //Loop that populates the csv file
+      for (int j = 0; j < chart_template_Storer.size(); j++){
+        for (int k = 0; k < chart_template_Storer.get(j).length; k++){
+          writer.append(chart_template_Storer.get(j)[k] + ","); //Writes in each value into the row
+        }
+        writer.append("\n"); //Moves to next row
+      }
+      writer.close(); //Closes writer
     }
-    else{
-      System.out.println("No File Created");
-    }
-    
-    //FileWriter writer = new FileWriter(Test_File, true); //True states that this is appending existing file
-    FileWriter writer = new FileWriter(Test_File, false); //False states that this is overwriting existing file
-    for (int i = 0; i < 10; i++){
-      writer.append("Hello");
-      writer.append(","); //Seperates values in csv
-      writer.append("boo");
-      writer.append("\n"); //Moves to next row
-    }
-    writer.close();
-    //_________________________________________________________________________
-    
-    
-    
   }
 }
