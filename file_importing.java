@@ -149,8 +149,7 @@ class Kong_Frank_Methods{
     return student_chart_Path; //Returns the path of the file read
   }
   //______________________________________________________________________________________________________________________________________
-  //METHOD CURRENTLY UNDER "CONSTRUCTION". REQUIRES FURTHUR CHANGES LATER.
-    //Methods that edits the chart csv of a student
+    //Methods that stores the checks of a student
     public static void student_chart_Initializer(String chart_Path,
                                                  ArrayList<String[]> student_save_info) throws IOException{
     File student_Checks = new File(chart_Path);
