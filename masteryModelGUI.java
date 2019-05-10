@@ -121,10 +121,10 @@ public class masteryModelGUI extends Application {
     initScene = new Scene(addVBox(), 250, 200); 
     chartScene = new Scene(checklistLayout, 800, 600);
     chartScene2 = new Scene(checklistLayout2, 800, 600);
-    /*
+    
     chartScene.getStylesheets().add(getClass().getResource("grid-with-borders.css").toExternalForm());
     chartScene2.getStylesheets().add(getClass().getResource("grid-with-borders.css").toExternalForm());
-*/
+
     initWindow.setResizable(true);
     
     
@@ -181,7 +181,7 @@ public class masteryModelGUI extends Application {
     //thinking labels
     Label thinkingLabel = new Label("Thinking [   /8]\n1: Investigate, in qualitative and quantitative terms,\nuniform and non-uniform linear motion, and solve related problems");
     thinkingLabel.setId("bold-label");
-    Label thinking1 = new Label("analyse and interpret position–time, velocity– time, and acceleration–time graphs of motion in one dimension");
+    Label thinking1 = new Label("analyse and interpret position–time, velocity�? time, and acceleration–time graphs of motion in one dimension");
     Label thinking2 = new Label("solve problems involving distance, position, and displacement");
     Label thinking3 = new Label("solve related problems using graphical analysis");
     Label thinking4 = new Label("solve related problems using algebraic equations");
@@ -302,7 +302,7 @@ public class masteryModelGUI extends Application {
     Label com6 = new Label("Uses appropriate scientific notation");
     Label com7 = new Label("Uses appropriate significant digits");
     //Application labels
-    Label appLabel = new Label("Application [   /4]\nAnalyse technologies that apply concepts related to kinematics, and assess the technologies’ social and environmental impact");
+    Label appLabel = new Label("Application [   /4]\nAnalyse technologies that apply concepts related to kinematics, and assess the technologies�? social and environmental impact");
     appLabel.setId("bold-label");
     Label app1 = new Label("analyse, on the basis of research, a technology that applies concepts related to kinematics");
     Label app2 = new Label("assess the impact on society and the environment of a technology that applies concepts related to kinematics");

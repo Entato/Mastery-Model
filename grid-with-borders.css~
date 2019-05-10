@@ -1,6 +1,0 @@
-.label{
-  -fx-padding: 10,10,10,10;
-}
-#bold-label {
-  -fx-font-weight: bold;
-}
