@@ -29,21 +29,49 @@ public class MasteryModelIntegrated extends Application {
   
   ComboBox <String> nameList;
   
-  GridPane knowledgeThinkingGrid = new GridPane();
-  GridPane comCriteriaGrid = new GridPane();
-  GridPane comGrid = new GridPane();
-  GridPane appGrid = new GridPane();
+  static GridPane knowledgeThinkingGrid = new GridPane();
+  static GridPane comCriteriaGrid = new GridPane();
+  static GridPane comGrid = new GridPane();
+  static GridPane appGrid = new GridPane();
   
   Button initButton = new Button("Initialize");
   Button editButton = new Button("Edit");
-  //Button initButton = new Button("Initialize");
+  Button submitNameButton = new Button("Submit");
+  Button nextPageButton = new Button("Next Page");
+  Button prevPageButton = new Button("Previous Page");
+  Button saveChangesButton = new Button("Save Changes");
+  Button saveChangesButton2 = new Button("Save Changes");
+  //for first page
+  Button checkButton = new Button("\u2713");
+  Button crossButton = new Button("\u2717");
+  Button crossCheckButton = new Button("\u237B");
+  //for second page
+  Button checkButton2 = new Button("\u2713");
+  Button crossButton2 = new Button("\u2717");
+  Button crossCheckButton2 = new Button("\u237B");
   
-  static String[] leftLabels = new String[50];
-  static String[] leftLabels2 = new String[50];
-  static TextField[] textFields = new TextField[50];
-  static TextField[] comTextFields = new TextField[50];
-  static TextField[] appTextFields = new TextField[4];  
-  static String[] comAssessments = new String[15];
+  
+  static String nameFilePath = null;
+  static String chartFilePath = null;
+  static String studentName = null;
+  
+  static int textFieldCounter;
+  static int indexSaver;
+  
+  static boolean combined;
+  static boolean[] firstTime = new boolean[1];
+  
+  
+  //Labels arrays
+  static ArrayList <String> leftLabels1 = new ArrayList<String>();
+  static ArrayList <String> leftLabels2 = new ArrayList<String>();
+  //TextFields 
+  static ArrayList <TextField> textFields = new ArrayList <TextField>();
+  //com assesment labels
+  static ArrayList<String> comAssessments = new ArrayList<String>();
+  //saving textfield changes
+  static ArrayList<String> savedText = new ArrayList<String>();
+  
   //Global variables
   static String currentDirPath = System.getProperty("user.dir"); //Finds the path of the working directory
   static String MainFolderPath = currentDirPath + "\\MasteryModel"; //Stores the path of the main folder
@@ -59,8 +87,8 @@ public class MasteryModelIntegrated extends Application {
   public static void mainFolderCreator(String mainPath) throws IOException{
     File MasteryModelFolder = new File(mainPath); //Creates a new file 
     boolean mainfoldercreated = MasteryModelFolder.mkdirs(); //Converts the file into the main folder
-    }
   }
+  
  //______________________________________________________________________________________________________________________________________
   //Method to move selected files into the main folder (You can rename the folder to whatever you want)
   public static String fileMover(String mainPath, String filePath, String fileName) throws IOException{
@@ -126,7 +154,7 @@ public class MasteryModelIntegrated extends Application {
   }
   //______________________________________________________________________________________________________________________________________
   //Method that returns the index (row) of which array contains the student info
-  public static int student_index_Finder(String full_name, String mainPath, ArrayList<String[]> studentarrlist){
+  public static int student_index_Finder(String full_name, String mainPath, ArrayList<String[]> studentarrlist) {
     //Initializes variable to store the index number of the arraylist which contains the student's name
     int index_number = 0; 
     //Checks for the student in the array
@@ -215,7 +243,9 @@ public class MasteryModelIntegrated extends Application {
   
   //______________________________________________________________________________________________________________________________________
   public static void main(String[] args) throws IOException{
-    
+    //needed for saving textfields
+     firstTime[0] = true;
+     
     //Calls the main folder creator method
     mainFolderCreator(MainFolderPath); 
     
@@ -232,7 +262,7 @@ public class MasteryModelIntegrated extends Application {
     //Starts up GUI
     launch(args); 
   }
-  public void start(Stage primaryStage) throws Exception{
+  public void start(Stage primaryStage) throws Exception {
     //Sets this window as the main window of this start method
     window = primaryStage;
     //sets the title of the window
@@ -240,17 +270,124 @@ public class MasteryModelIntegrated extends Application {
     
     //init Button
     initButton.setOnAction(e -> { 
-      nameGetter();
-      chartGetter();
+      nameFilePath = nameGetter();
+      chartFilePath = chartGetter();
       
     });
     
     //edit Button
     editButton.setOnAction(e -> nameScener());
     
+    //Submit name button 
+    submitNameButton.setOnAction(e -> { 
+      studentName = nameList.getValue(); 
+      
+      int index = student_index_Finder(studentName, MainFolderPath, student_csv_Storer);
+      String studentPath = student_Finder(index, MainFolderPath, student_csv_Storer);
+      
+      System.out.println(studentName);
+      System.out.println(studentPath);
+      
+      window.setScene(chartScene);
+      window.setMaximized(true);
+    });
+    
+    //check button
+    checkButton.setMinWidth(150);
+    checkButton.setFocusTraversable(false);
+    
+    checkButton.setOnAction(e -> {
+      
+      Node fo = chartScene.getFocusOwner();
+      if (fo instanceof TextInputControl) {
+        ((TextInputControl) fo).replaceSelection("\u2713");
+      }
+        
+    });
+    
+    //cross button 
+    crossButton.setMinWidth(150);
+    crossButton.setFocusTraversable(false);
+    
+    crossButton.setOnAction(e -> {
+      Node fo = chartScene.getFocusOwner();
+      if (fo instanceof TextInputControl) {
+        ((TextInputControl) fo).replaceSelection("\u2717");
+      }
+      
+    });
+    
+    //cross check button
+    crossCheckButton.setMinWidth(150);
+    crossCheckButton.setFocusTraversable(false);
+    crossCheckButton.setOnAction(e -> {
+      Node fo = chartScene.getFocusOwner();
+      if (fo instanceof TextInputControl) {
+        ((TextInputControl) fo).replaceSelection("\u237B");
+      }
+      
+    });
+    
+    //check2 button
+    checkButton2.setMinWidth(150);
+    checkButton2.setFocusTraversable(false);
+    
+    checkButton2.setOnAction(e -> {
+      
+      Node fo = chartScene2.getFocusOwner();
+      if (fo instanceof TextInputControl) {
+        ((TextInputControl) fo).replaceSelection("\u2713");
+      }
+        
+    });
+    
+    //cross2 button 
+    crossButton2.setMinWidth(150);
+    crossButton2.setFocusTraversable(false);
+    
+    crossButton2.setOnAction(e -> {
+      Node fo = chartScene2.getFocusOwner();
+      if (fo instanceof TextInputControl) {
+        ((TextInputControl) fo).replaceSelection("\u2717");
+      }
+      
+    });
+    
+    //cross2 check button
+    crossCheckButton2.setMinWidth(150);
+    crossCheckButton2.setFocusTraversable(false);
+    crossCheckButton2.setOnAction(e -> {
+      Node fo = chartScene2.getFocusOwner();
+      if (fo instanceof TextInputControl) {
+        ((TextInputControl) fo).replaceSelection("\u237B");
+      }
+      
+    });
+    
+    //next page button
+    nextPageButton.setOnAction(e -> nextPageMethod());
+    
+    //prev page button
+    prevPageButton.setOnAction( e-> prevPageMethod());
+    
+    //save changes button 
+    saveChangesButton.setOnAction(e -> textFieldCollector());
+    
+    //save changes button2 (for second page) 
+    saveChangesButton2.setOnAction(e -> textFieldCollector());
+    
     //Scene
     initScene = new Scene(initVBox(), 300, 250);
-    nameScene = new Scene(VBoxDropDown(), 300, 550);
+    nameScene = new Scene(VBoxDropDown(), 300, 350);
+    
+    //chart scenes
+    chartScene = new Scene(createChart1(), 900,900);
+    chartScene2 = new Scene(createChart2(), 900,900);
+    
+    chartScene.getStylesheets().add(getClass().getResource("grid-with-borders.css").toExternalForm());
+    chartScene2.getStylesheets().add(getClass().getResource("grid-with-borders.css").toExternalForm());
+    
+    
     //basic Window Callibration
     window.setScene(initScene);
     window.show();
@@ -273,7 +410,7 @@ public class MasteryModelIntegrated extends Application {
   }
   //_________________________________________________________________________________________________
   //asks user to pick CSV name file
-  public void nameGetter() {
+  public String nameGetter() {
     String nameFilePathway;
     FileChooser fileChooser = new FileChooser();
     fileChooser.setTitle("Name Data File");
@@ -286,10 +423,12 @@ public class MasteryModelIntegrated extends Application {
       }
       
       System.out.println(nameFilePathway);
+      
+      return nameFilePathway;
   }
   //________________________________________________________________________________________________
   //asks user to pick CSV chart file
-  public void chartGetter() {
+  public String chartGetter() {
     String chartFilePathway;
     FileChooser fileChooser = new FileChooser();
     fileChooser.setTitle("Chart Data File");
@@ -305,13 +444,17 @@ public class MasteryModelIntegrated extends Application {
       
       //prints pathway for now
       System.out.println(chartFilePathway);
+      
+      return chartFilePathway;
   }
   //_________________________________________________________________________________________________
   //creates layout for drop down scene 
   public VBox VBoxDropDown() {
     VBox nameVBox = new VBox(10);
-    nameVBox.getChildren().addAll(comboBoxMaker());
+    nameVBox.setPadding(new Insets(20,20,20,20));
+    nameVBox.getChildren().addAll(comboBoxMaker(),submitNameButton);
     nameVBox.setAlignment(Pos.TOP_LEFT);
+    
     
     return nameVBox;
   }
@@ -320,15 +463,320 @@ public class MasteryModelIntegrated extends Application {
   public ComboBox<String> comboBoxMaker() {
     
     nameList = new ComboBox<>();
-    nameList.getItems().addAll("placeholder1", "placeholder2");
+    
+    for (int i = 0; i < student_csv_Storer.size(); i++){
+      
+       nameList.getItems().addAll(student_csv_Storer.get(i)[1] + ", " + student_csv_Storer.get(i)[2]);
+        
+      
+    }
+    
+    
+    nameList.setOnAction(e -> { 
+      
+    });
+    
+    
+    
+    
+    
+    
     nameList.setPromptText("Choose a Student"); //sets prompt text
-    nameList.setMinWidth(300); //sets minimum width of drop down list 
+    nameList.setMinWidth(200); //sets minimum width of drop down list 
     
     return nameList;
     
   }
+  //_______________________________________________________________________________________________
+  //next page method
+  public void nextPageMethod() {
+    window.setScene(chartScene2);
+    window.setMaximized(false);
+    window.setMaximized(true);
+  }
+  //_______________________________________________________________________________________________
+  //prev page method
+  public void prevPageMethod() {
+    window.setScene(chartScene);
+    window.setMaximized(false);
+    window.setMaximized(true);
+  }
+  //________________________________________________________________________________________________
+  //creates chart for page 1 (knowledge, thinking, and thinking labs)
   
+  public BorderPane createChart1() {
+    
+    BorderPane chart1BP = new BorderPane();
+    chart1BP.setCenter(knowledgeThinkingGrid);
+    
+    
+    
+    textFieldCounter = 0;
+    
+    
+    //CHART CREATION for page 1**********************************************
+    combined = false;
+    
+    indexSaver = 0;
+    //first page
+    outerloop:
+    for (int i = 0; i < chart_template_Storer.size(); i++) {
+      for (int j = 0; j < chart_template_Storer.get(i).length; j++) {
+        if (combined) {
+          combined = false;
+        }
+        else if (chart_template_Storer.get(i)[j].contains("Communication")) {
+          indexSaver = i;
+          break outerloop;
+        }
+        else if (chart_template_Storer.get(i)[j].length()>20) { 
+           
+          leftLabels1.add(chart_template_Storer.get(i)[j]); 
+          
+        }
+        else if (chart_template_Storer.get(i)[j].contains("Knowledge")
+           || chart_template_Storer.get(i)[j].contains("Thinking")) {
+          leftLabels1.add(chart_template_Storer.get(i)[j] + "\n" + chart_template_Storer.get(i+1)[j]);
+         
+          combined = true;
+        }  
+      }
+    }
+    
+    
+    //adding the labels and textfields
+    
+    for (int i = 0; i < leftLabels1.size(); i++) {
+       
+       
+       
+      knowledgeThinkingGrid.add(new Label(leftLabels1.get(i)),0,i);
+       
+      if (leftLabels1.get(i).contains("Knowledge") 
+                  || leftLabels1.get(i).contains("Thinking")
+                  || leftLabels1.get(i).contains("Labs")) {
+         knowledgeThinkingGrid.add(new Label("     Not Attempted [0]"),1,i);
+         knowledgeThinkingGrid.add(new Label("        Developing [2]"),2,i);
+         knowledgeThinkingGrid.add(new Label("     Undertstanding [3]"),3,i);
+         knowledgeThinkingGrid.add(new Label("     Mastery [4]"),4,i);
+       }
+       for (int j = 1; j < 5; j++) {
+         if (!leftLabels1.get(i).contains("Knowledge") 
+               && !leftLabels1.get(i).contains("Thinking") 
+               && !leftLabels1.get(i).contains("Labs"))  {
+           textFields.add(new TextField());
+           knowledgeThinkingGrid.add(textFields.get(textFieldCounter),j,i);
+           textFieldCounter++;
+         }
+       }
+       
+                  
+     }
+    //END OF CHART CREATION for page 1 *************************************************************
+    
+    //sets grid lines so user can see individual cells
+    knowledgeThinkingGrid.setGridLinesVisible(true);
+    
+    
+                               
+    chart1BP.setBottom(inputButtons());
+    
+    
+    textFields.get(0).setOnAction(e -> System.out.println(textFields.get(0).getText()));
+    
+    
+    
+    return chart1BP;
+  }
   
+  //____________________________________________________________________________________________________
+  //creates layout for buttons (check, cross, and cross check buttons)
+  public HBox inputButtons() {
+    HBox hBox = new HBox(50);
+    hBox.getChildren().addAll(crossCheckButton, crossButton, checkButton, saveChangesButton, nextPageButton);
+    
+    hBox.setAlignment(Pos.CENTER);
+    hBox.setPadding(new Insets(20,20,200,20));
+    
+    return hBox;
+  }
+  //____________________________________________________________________________________________________
+  //creates layout for buttons (check, cross, and cross check buttons) Page 2
+  public HBox inputButtons2() {
+    HBox hBox = new HBox(50);
+    hBox.getChildren().addAll(crossCheckButton2, crossButton2, checkButton2, saveChangesButton2, prevPageButton);
+    
+    hBox.setAlignment(Pos.CENTER);
+    hBox.setPadding(new Insets(20,20,200,20));
+    
+    return hBox;
+  }
+  //____________________________________________________________________________________________________
+  //creates chart for second page (communication and Application)
+  public BorderPane createChart2() {
+    
+    String appLabel = "";
+    
+    BorderPane chart2BP = new BorderPane();
+    
+    VBox layout = new VBox(20);
+    layout.getChildren().addAll(appGrid, inputButtons2());
+    
+    chart2BP.setLeft(comCriteriaGrid);
+    chart2BP.setCenter(comGrid);
+    chart2BP.setBottom(layout);
+    
+    //CHART 2 CREATOR *******************************************
+    
+    
+    int keptIndex = 0;
+    //second page
+    
+    
+    for (int i = indexSaver; i < chart_template_Storer.size(); i++) {
+        
+      for (int j = 0; j < chart_template_Storer.get(i).length; j++) {
+        
+        if (combined) {
+          combined = false;
+        }
+        else if (chart_template_Storer.get(i)[j].contains("Test") 
+                   || chart_template_Storer.get(i)[j].contains("Quiz") 
+                   || chart_template_Storer.get(i)[j].contains("Lab") 
+                   || chart_template_Storer.get(i)[j].contains("Quest") 
+                   || chart_template_Storer.get(i)[j].contains("Exit")
+                   || chart_template_Storer.get(i)[j].contains("Peer") 
+                   || chart_template_Storer.get(i)[j].contains("Investigation")) {
+          comAssessments.add(chart_template_Storer.get(i)[j]);
+          
+        }
+        
+        else if (chart_template_Storer.get(i)[j].contains("Application")) {
+          leftLabels2.add(chart_template_Storer.get(i)[j] + "\n" + chart_template_Storer.get(i+1)[j]);
+          combined = true;
+          keptIndex = i;
+          break;
+        }
+        
+      }
+    }
+    
+    //adds default labels that remian contant 
+    comCriteriaGrid.add(new Label("Communication   [    /4]"), 0, 0);
+    comCriteriaGrid.add(new Label("- Organizes ideas in a clear and logical manner\n- Communicates appropriately for audience (test vs. lab)" +
+      "\n- Uses appropriate terminology\n- Uses appropriate symbols\n- Uses appropriate formulae\n- Uses appropriate scientific notation" +
+      "\n- Uses appropriate significant digits\n*Mark is averaged from all assesments\n\n\n\n"), 0, 1);
+    
+    //adds default labels that will never change
+    comGrid.add(new Label("Assessment"),0,0);
+    comGrid.add(new Label("Developing [2]"),1,0);
+    comGrid.add(new Label("Understanding [3]"),2,0);
+    comGrid.add(new Label("Mastery [4]"),3,0); 
+    
+    //Com assesments labels
+    for (int i = 0; i < comAssessments.size(); i++) {
+       
+      comGrid.add(new Label(comAssessments.get(i)),0,i+1);
+       
+    }
+    
+    //adding the communication textfields
+    for (int i = 0; i < comAssessments.size(); i++) {
+       
+      textFields.add(new TextField());
+      comGrid.add(textFields.get(textFieldCounter),1,i+1);
+         
+      textFieldCounter++;
+      
+      textFields.add(new TextField());
+      comGrid.add(textFields.get(textFieldCounter),2,i+1);
+         
+      textFieldCounter++;
+      
+      textFields.add(new TextField());
+      comGrid.add(textFields.get(textFieldCounter),3,i+1);
+         
+      textFieldCounter++;
+       
+       
+     }
+    
+    //Application label creator
+    for (int i = keptIndex+2; i < chart_template_Storer.size(); i++) {
+        
+      for (int j = 0; j < chart_template_Storer.get(i).length; j++) {
+        
+        appLabel += "\n" + chart_template_Storer.get(i)[j];
+        
+      }
+    }
+    
+    for (int i = 0; i < leftLabels2.size(); i++) {
+       if (leftLabels2.get(i).contains("Application")) {
+         appGrid.add(new Label(leftLabels2.get(i)),0,0);
+         appGrid.add(new Label("Not Attempted [0]"),1,0);
+         appGrid.add(new Label("Developing [2]"),2,0);
+         appGrid.add(new Label("Understanding [3]"),3,0);
+         appGrid.add(new Label("Mastery [4]"),4,0);
+       } 
+     }
+    
+    appGrid.add(new Label(appLabel),0,1);
+    
+    //These textboxes are always in this position
+    textFields.add(new TextField());
+    appGrid.add(textFields.get(textFieldCounter),1,1);
+    textFieldCounter++;
+    
+    textFields.add(new TextField());
+    appGrid.add(textFields.get(textFieldCounter),2,1);
+    textFieldCounter++;
+    
+    textFields.add(new TextField());
+    appGrid.add(textFields.get(textFieldCounter),3,1);
+    textFieldCounter++;
+    
+    textFields.add(new TextField());
+    appGrid.add(textFields.get(textFieldCounter),4,1);
+    textFieldCounter++;
+    
+    
+    
+    // END OF CHART 2 CREATOR************************************
+    
+    
+    
+    comCriteriaGrid.setGridLinesVisible(true);
+    comGrid.setGridLinesVisible(true);
+    appGrid.setGridLinesVisible(true);
+    appGrid.setPadding(new Insets(0,0,100,0));
+    
+    //returns created borderPane layout 
+    return chart2BP;
+  }
+  //______________________________________________________________________________________________
+  //saving TextFields into an ArrayList
+  public void textFieldCollector() {
+  
+    //This condition sets the string[] to some values just so the next loop can replace them. not important the first time
+    //but is needed if user wants to save multiple times over in the same session
+    if (firstTime[0]) {
+      for (int i = 0; i < textFields.size(); i++) {
+      savedText.add(textFields.get(i).getText());
+      }
+      firstTime[0] = false;
+    }
+    //Saves textfield inputs to a string array
+    for (int i = 0; i < textFields.size(); i++) {
+      savedText.set(i, textFields.get(i).getText());
+      System.out.println(savedText.get(i));
+    }
+    
+    
+    
+    
+     
+  }
   
   
   
