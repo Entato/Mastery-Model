@@ -24,12 +24,9 @@ class Kong_Frank_Methods{
   public static void mainFolderCreator(String mainPath) throws IOException{
     File MasteryModelFolder = new File(mainPath); //Creates a new file 
     boolean mainfoldercreated = MasteryModelFolder.mkdirs(); //Converts the file into the main folder
-    if (mainfoldercreated == true){ //If folder was created
-      System.out.println("Folder Intialized! Please insert your files and restart the program!");
-      System.exit(0); //Terminates program
     }
   }
-  
+ 
   //______________________________________________________________________________________________________________________________________
   //Method to move selected files into the main folder (You can rename the folder to whatever you want)
   public static String fileMover(String mainPath, String filePath, String fileName) throws IOException{
