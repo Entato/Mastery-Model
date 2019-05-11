@@ -15,6 +15,7 @@ import javafx.scene.control.cell.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.stage.FileChooser;
+import java.nio.file.*;
 import java.io.*;
 import java.util.*;
 
@@ -58,10 +59,14 @@ public class MasteryModelIntegrated extends Application {
   public static void mainFolderCreator(String mainPath) throws IOException{
     File MasteryModelFolder = new File(mainPath); //Creates a new file 
     boolean mainfoldercreated = MasteryModelFolder.mkdirs(); //Converts the file into the main folder
-    if (mainfoldercreated == true){ //If folder was created
-      System.out.println("Folder Intialized! Please insert your files and restart the program!");
-      System.exit(0); //Terminates program
     }
+  }
+ //______________________________________________________________________________________________________________________________________
+  //Method to move selected files into the main folder (You can rename the folder to whatever you want)
+  public static String fileMover(String mainPath, String filePath, String fileName) throws IOException{
+    Path filemove = Files.move(Paths.get(filePath), Paths.get(mainPath + "\\" + fileName)); //Moves the file
+    String path = filemove.toString(); //Converts path to a String value
+    return path; //Returns the path of the moved file
   }
   //______________________________________________________________________________________________________________________________________
   //Reads and stores the info in the student info csv
