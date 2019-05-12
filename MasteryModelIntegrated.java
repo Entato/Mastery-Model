@@ -200,7 +200,7 @@ public class MasteryModelIntegrated extends Application {
       while ((line = filereader.readLine())!= null){ //Keeps running until all lines are read
         String newline = line.replaceAll(", ", "#####"); //Replaces the commas that aren't delimiters with temporary text
         String[] temprowarray = newline.split(","); //Stores the seperated values of each row into an array
-        studentarrlist.add(temprowarray); //Adds array into an arraylist
+        studentchartarrlist.add(temprowarray); //Adds array into an arraylist
       }
     }
     catch (IOException e){ //If a file wasn't found
