@@ -34,6 +34,9 @@ public class MasteryModelIntegrated extends Application {
   static GridPane comGrid = new GridPane();
   static GridPane appGrid = new GridPane();
   
+  BorderPane chart1BP;
+  BorderPane chart2BP;
+  
   Button initButton = new Button("Initialize");
   Button editButton = new Button("Edit");
   Button submitNameButton = new Button("Submit");
@@ -41,6 +44,7 @@ public class MasteryModelIntegrated extends Application {
   Button prevPageButton = new Button("Previous Page");
   Button saveChangesButton = new Button("Save Changes");
   Button saveChangesButton2 = new Button("Save Changes");
+  Button backButton = new Button("Back");
   //for first page
   Button checkButton = new Button("\u2713");
   Button crossButton = new Button("\u2717");
@@ -61,7 +65,7 @@ public class MasteryModelIntegrated extends Application {
   
   static boolean combined;
   static boolean[] firstTime = new boolean[1];
-  
+  static boolean[] openedFirst = new boolean[1];
   
   //Labels arrays
   static ArrayList <String> leftLabels1 = new ArrayList<String>();
@@ -242,9 +246,18 @@ public class MasteryModelIntegrated extends Application {
       writer.close(); //Closes writer
     }
   }
+ //______________________________________________________________________________________________________________________________________
+//Method that clears the arraylists that stores the information on the student check csv files
+    public static void arraylist_clearer(ArrayList<String[]> student_save_info, ArrayList<String[]> studentchartarrlist){
+      studentchartarrlist.clear();
+      student_save_info.clear();
+    }
+  //______________________________________________________________________________________________________________________________________
   
   //______________________________________________________________________________________________________________________________________
   public static void main(String[] args) throws IOException {
+    //needed for submitting
+    openedFirst[0] = true;
     //needed for saving textfields
      firstTime[0] = true;
      
@@ -284,7 +297,20 @@ public class MasteryModelIntegrated extends Application {
     submitNameButton.setOnAction(e -> { 
       studentName = nameList.getValue(); 
       
-      int index = student_index_Finder(studentName, MainFolderPath, student_csv_Storer);
+      
+      
+      
+      
+      //chart scenes
+      if (openedFirst[0]) {
+        chartScene = new Scene(createChart1(), 900,900);
+        chartScene2 = new Scene(createChart2(), 900,900);
+    
+        chartScene.getStylesheets().add(getClass().getResource("grid-with-borders.css").toExternalForm());
+        chartScene2.getStylesheets().add(getClass().getResource("grid-with-borders.css").toExternalForm());
+        window.setScene(chartScene);
+        openedFirst[0] = false;
+        int index = student_index_Finder(studentName, MainFolderPath, student_csv_Storer);
       String studentPath = student_Finder(index, MainFolderPath, student_csv_Storer);
       try {
         checkMarkFilePath = student_chart_Reader(studentPath, index, student_csv_Storer, student_Check_Storer);
@@ -292,20 +318,30 @@ public class MasteryModelIntegrated extends Application {
       catch (IOException a) {
         System.out.println("IOException has occured");
       }
+        window.setMaximized(true);
+        System.out.println(studentName);
+        System.out.println(studentPath);
+        System.out.println(checkMarkFilePath);
+      }
       
-      System.out.println(studentName);
-      System.out.println(studentPath);
-      System.out.println(checkMarkFilePath);
       
-      //chart scenes
-      chartScene = new Scene(createChart1(), 900,900);
-      chartScene2 = new Scene(createChart2(), 900,900);
-    
-      chartScene.getStylesheets().add(getClass().getResource("grid-with-borders.css").toExternalForm());
-      chartScene2.getStylesheets().add(getClass().getResource("grid-with-borders.css").toExternalForm());
-      
-      window.setScene(chartScene);
-      window.setMaximized(true);
+      else {
+        int index = student_index_Finder(studentName, MainFolderPath, student_csv_Storer);
+      String studentPath = student_Finder(index, MainFolderPath, student_csv_Storer);
+      try {
+        checkMarkFilePath = student_chart_Reader(studentPath, index, student_csv_Storer, student_Check_Storer);
+      }
+      catch (IOException a) {
+        System.out.println("IOException has occured");
+      }
+      textSetter();
+        window.setScene(chartScene);
+        window.setMaximized(true);
+        
+        System.out.println(studentName);
+        System.out.println(studentPath);
+        System.out.println(checkMarkFilePath);
+      }
     });
     
     //check button
@@ -391,6 +427,9 @@ public class MasteryModelIntegrated extends Application {
     
     //save changes button2 (for second page) 
     saveChangesButton2.setOnAction(e -> textFieldCollector());
+    
+    //back button
+    backButton.setOnAction(e -> backButtonMethod());
     
     //Scene
     initScene = new Scene(initVBox(), 300, 250);
@@ -518,7 +557,7 @@ public class MasteryModelIntegrated extends Application {
   
   public BorderPane createChart1() {
     
-    BorderPane chart1BP = new BorderPane();
+    chart1BP = new BorderPane();
     chart1BP.setCenter(knowledgeThinkingGrid);
     
     
@@ -605,7 +644,7 @@ public class MasteryModelIntegrated extends Application {
   //creates layout for buttons (check, cross, and cross check buttons)
   public HBox inputButtons() {
     HBox hBox = new HBox(50);
-    hBox.getChildren().addAll(crossCheckButton, crossButton, checkButton, saveChangesButton, nextPageButton);
+    hBox.getChildren().addAll(backButton, crossCheckButton, crossButton, checkButton, saveChangesButton, nextPageButton);
     
     hBox.setAlignment(Pos.CENTER);
     hBox.setPadding(new Insets(20,20,200,20));
@@ -629,7 +668,7 @@ public class MasteryModelIntegrated extends Application {
     
     String appLabel = "";
     
-    BorderPane chart2BP = new BorderPane();
+    chart2BP = new BorderPane();
     
     VBox layout = new VBox(20);
     layout.getChildren().addAll(appGrid, inputButtons2());
@@ -764,12 +803,8 @@ public class MasteryModelIntegrated extends Application {
     appGrid.setPadding(new Insets(0,0,100,0));
     
     //reading textfield values
+    textSetter();
     
-    for (int i = 0; i < student_Check_Storer.size(); i++) {
-      for (int j = 0; j < student_Check_Storer.get(i).length; j++) {
-        textFields.get(i).setText(student_Check_Storer.get(i)[j]);
-      }
-    }
     
     System.out.println(student_Check_Storer.size());
    
@@ -805,6 +840,22 @@ public class MasteryModelIntegrated extends Application {
     
     
      
+  }
+  
+  public void backButtonMethod() {
+    
+    window.setScene(nameScene);
+    
+
+    
+    arraylist_clearer(savedText, student_Check_Storer);
+  }
+  public void textSetter() {
+    for (int i = 0; i < student_Check_Storer.size(); i++) {
+      for (int j = 0; j < student_Check_Storer.get(i).length; j++) {
+        textFields.get(i).setText(student_Check_Storer.get(i)[j]);
+      }
+    }
   }
   
   
