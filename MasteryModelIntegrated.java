@@ -221,7 +221,7 @@ public class MasteryModelIntegrated extends Application {
   }
   //______________________________________________________________________________________________________________________________________
     //Methods that stores the checks of a student
-    public static void student_chart_Initializer(String chart_Path,
+    public static void student_chart_Saver(String chart_Path,
                                                  ArrayList<String[]> student_save_info) throws IOException {
     File student_Checks = new File(chart_Path);
     //Writer set to false so that each write would overwrite its contents
@@ -244,7 +244,7 @@ public class MasteryModelIntegrated extends Application {
   }
   
   //______________________________________________________________________________________________________________________________________
-  public static void main(String[] args) throws IOException{
+  public static void main(String[] args) throws IOException {
     //needed for saving textfields
      firstTime[0] = true;
      
@@ -259,7 +259,7 @@ public class MasteryModelIntegrated extends Application {
     student_Folder_Creator(MainFolderPath, student_csv_Storer); 
     
     //Calls method that creates a file in each student's folder
-    student_chart_Initializer(MainFolderPath, student_csv_Storer, chart_template_Storer); 
+   // student_chart_Initializer(MainFolderPath, student_csv_Storer, chart_template_Storer); 
     
     //Starts up GUI
     launch(args); 
@@ -296,6 +296,13 @@ public class MasteryModelIntegrated extends Application {
       System.out.println(studentName);
       System.out.println(studentPath);
       System.out.println(checkMarkFilePath);
+      
+      //chart scenes
+      chartScene = new Scene(createChart1(), 900,900);
+      chartScene2 = new Scene(createChart2(), 900,900);
+    
+      chartScene.getStylesheets().add(getClass().getResource("grid-with-borders.css").toExternalForm());
+      chartScene2.getStylesheets().add(getClass().getResource("grid-with-borders.css").toExternalForm());
       
       window.setScene(chartScene);
       window.setMaximized(true);
@@ -390,11 +397,7 @@ public class MasteryModelIntegrated extends Application {
     nameScene = new Scene(VBoxDropDown(), 300, 350);
     
     //chart scenes
-    chartScene = new Scene(createChart1(), 900,900);
-    chartScene2 = new Scene(createChart2(), 900,900);
     
-    chartScene.getStylesheets().add(getClass().getResource("grid-with-borders.css").toExternalForm());
-    chartScene2.getStylesheets().add(getClass().getResource("grid-with-borders.css").toExternalForm());
     
     
     //basic Window Callibration
@@ -760,13 +763,16 @@ public class MasteryModelIntegrated extends Application {
     appGrid.setGridLinesVisible(true);
     appGrid.setPadding(new Insets(0,0,100,0));
     
-    try {
-      student_chart_Reader(studentPath, index, student_csv_Storer, student_Check_Storer);
-    }
-    catch (IOException e) {
-      System.out.println("reading checks error");
+    //reading textfield values
+    
+    for (int i = 0; i < student_Check_Storer.size(); i++) {
+      for (int j = 0; j < student_Check_Storer.get(i).length; j++) {
+        textFields.get(i).setText(student_Check_Storer.get(i)[j]);
+      }
     }
     
+    System.out.println(student_Check_Storer.size());
+   
     
     //returns created borderPane layout 
     return chart2BP;
@@ -790,8 +796,8 @@ public class MasteryModelIntegrated extends Application {
     }
     
     try {
-      student_chart_Initializer(checkMarkFilePath, savedText);
-      System.out.println("");
+      student_chart_Saver(checkMarkFilePath, savedText);
+      
     }
     catch (IOException e) {
       System.out.println("Saving checkmarks error");
