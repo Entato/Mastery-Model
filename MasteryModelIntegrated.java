@@ -52,6 +52,7 @@ public class MasteryModelIntegrated extends Application {
   
   
   static String nameFilePath = null;
+  static String checkMarkFilePath = null;
   static String chartFilePath = null;
   static String studentName = null;
   
@@ -70,15 +71,16 @@ public class MasteryModelIntegrated extends Application {
   //com assesment labels
   static ArrayList<String> comAssessments = new ArrayList<String>();
   //saving textfield changes
-  static ArrayList<String> savedText = new ArrayList<String>();
+  static ArrayList<String[]> savedText = new ArrayList<String[]>();
   
-  //Global variables
+  //__________________________________________________________________________________________________________
+  //IO Global variables
   static String currentDirPath = System.getProperty("user.dir"); //Finds the path of the working directory
   static String MainFolderPath = currentDirPath + "\\MasteryModel"; //Stores the path of the main folder
   static ArrayList<String[]> student_csv_Storer = new ArrayList<String[]>(); //Initializes ArrayList that stores csv data for student info 
   static ArrayList<String[]> chart_template_Storer = new ArrayList<String[]>(); //Initializes ArrayList that stores the chart template
   static ArrayList<String[]> student_Check_Storer = new ArrayList<String[]>(); //Initializes ArrayList that stores the checks for a student for reading
-  static ArrayList<String[]> student_save_info = new ArrayList<String[]>(); //Initializes ArrayList that stores the saved checks for a student for writing
+  
   
   
   
@@ -220,7 +222,7 @@ public class MasteryModelIntegrated extends Application {
   //______________________________________________________________________________________________________________________________________
     //Methods that stores the checks of a student
     public static void student_chart_Initializer(String chart_Path,
-                                                 ArrayList<String[]> student_save_info) throws IOException{
+                                                 ArrayList<String[]> student_save_info) throws IOException {
     File student_Checks = new File(chart_Path);
     //Writer set to false so that each write would overwrite its contents
     FileWriter writer = new FileWriter(student_Checks, false); 
@@ -262,7 +264,7 @@ public class MasteryModelIntegrated extends Application {
     //Starts up GUI
     launch(args); 
   }
-  public void start(Stage primaryStage) throws Exception {
+  public void start(Stage primaryStage) throws Exception,IOException {
     //Sets this window as the main window of this start method
     window = primaryStage;
     //sets the title of the window
@@ -284,9 +286,16 @@ public class MasteryModelIntegrated extends Application {
       
       int index = student_index_Finder(studentName, MainFolderPath, student_csv_Storer);
       String studentPath = student_Finder(index, MainFolderPath, student_csv_Storer);
+      try {
+        checkMarkFilePath = student_chart_Reader(studentPath, index, student_csv_Storer, student_Check_Storer);
+      }
+      catch (IOException a) {
+        System.out.println("IOException has occured");
+      }
       
       System.out.println(studentName);
       System.out.println(studentPath);
+      System.out.println(checkMarkFilePath);
       
       window.setScene(chartScene);
       window.setMaximized(true);
@@ -751,6 +760,14 @@ public class MasteryModelIntegrated extends Application {
     appGrid.setGridLinesVisible(true);
     appGrid.setPadding(new Insets(0,0,100,0));
     
+    try {
+      student_chart_Reader(studentPath, index, student_csv_Storer, student_Check_Storer);
+    }
+    catch (IOException e) {
+      System.out.println("reading checks error");
+    }
+    
+    
     //returns created borderPane layout 
     return chart2BP;
   }
@@ -762,17 +779,23 @@ public class MasteryModelIntegrated extends Application {
     //but is needed if user wants to save multiple times over in the same session
     if (firstTime[0]) {
       for (int i = 0; i < textFields.size(); i++) {
-      savedText.add(textFields.get(i).getText());
+      savedText.add(textFields.get(i).getText().split(" "));
       }
       firstTime[0] = false;
     }
-    //Saves textfield inputs to a string array
+    //Saves textfield inputs to a string ArrayList
     for (int i = 0; i < textFields.size(); i++) {
-      savedText.set(i, textFields.get(i).getText());
+      savedText.set(i, textFields.get(i).getText().split(" "));
       System.out.println(savedText.get(i));
     }
     
-    
+    try {
+      student_chart_Initializer(checkMarkFilePath, savedText);
+      System.out.println("");
+    }
+    catch (IOException e) {
+      System.out.println("Saving checkmarks error");
+    }
     
     
      
