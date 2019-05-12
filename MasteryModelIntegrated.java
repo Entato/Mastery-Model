@@ -215,10 +215,10 @@ public class MasteryModelIntegrated extends Application {
     }
     //______________________________________________________________________________________________________________________________________
     //Runs through each element in the arraylist and arrays inside and restores the temporary text to normal
-    for (int i = 0; i < studentarrlist.size(); i++){
-      for (int j = 0; j < studentarrlist.get(i).length; j++){
+    for (int i = 0; i < studentchartarrlist.size(); i++){
+      for (int j = 0; j < studentchartarrlist.get(i).length; j++){
         //Replaces the temporary text with its original text
-        studentarrlist.get(i)[j] = studentarrlist.get(i)[j].replaceAll("#####", ", "); 
+        studentchartarrlist.get(i)[j] = studentchartarrlist.get(i)[j].replaceAll("#####", ", "); 
       }
     }
     return student_chart_Path; //Returns the path of the file read
