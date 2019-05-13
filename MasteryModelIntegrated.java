@@ -342,7 +342,7 @@ public class MasteryModelIntegrated extends Application {
       catch (IOException a) {
         System.out.println("IOException has occured");
       }
-        window.setMaximized(true);
+
         System.out.println(studentName);
         System.out.println(studentPath);
         System.out.println(checkMarkFilePath);
@@ -353,7 +353,7 @@ public class MasteryModelIntegrated extends Application {
         chartScene.getStylesheets().add(getClass().getResource("grid-with-borders.css").toExternalForm());
         chartScene2.getStylesheets().add(getClass().getResource("grid-with-borders.css").toExternalForm());
         window.setScene(chartScene);
-      
+         window.setMaximized(true);
       /*
       else {
         int index = student_index_Finder(studentName, MainFolderPath, student_csv_Storer);
@@ -859,7 +859,7 @@ public class MasteryModelIntegrated extends Application {
     //Saves textfield inputs to a string ArrayList
     for (int i = 0; i < textFields.size(); i++) {
       savedText.set(i, textFields.get(i).getText().split(" "));
-      System.out.println(savedText.get(i));
+      System.out.println(savedText.get(i)[0]);
     }
     
     try {
