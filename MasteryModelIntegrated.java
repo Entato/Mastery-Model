@@ -221,6 +221,7 @@ public class MasteryModelIntegrated extends Application {
         studentchartarrlist.get(i)[j] = studentchartarrlist.get(i)[j].replaceAll("#####", ", "); 
       }
     }
+    System.out.println("Student chart array length is " + studentchartarrlist.size());
     return student_chart_Path; //Returns the path of the file read
   }
   //______________________________________________________________________________________________________________________________________
@@ -272,7 +273,7 @@ public class MasteryModelIntegrated extends Application {
     student_Folder_Creator(MainFolderPath, student_csv_Storer); 
     
     //Calls method that creates a file in each student's folder
-   // student_chart_Initializer(MainFolderPath, student_csv_Storer, chart_template_Storer); 
+    //student_chart_Initializer(MainFolderPath, student_csv_Storer, chart_template_Storer); 
     
     //Starts up GUI
     launch(args); 
@@ -303,12 +304,7 @@ public class MasteryModelIntegrated extends Application {
       
       //chart scenes
       if (openedFirst[0]) {
-        chartScene = new Scene(createChart1(), 900,900);
-        chartScene2 = new Scene(createChart2(), 900,900);
-    
-        chartScene.getStylesheets().add(getClass().getResource("grid-with-borders.css").toExternalForm());
-        chartScene2.getStylesheets().add(getClass().getResource("grid-with-borders.css").toExternalForm());
-        window.setScene(chartScene);
+        
         openedFirst[0] = false;
         int index = student_index_Finder(studentName, MainFolderPath, student_csv_Storer);
       String studentPath = student_Finder(index, MainFolderPath, student_csv_Storer);
@@ -323,11 +319,17 @@ public class MasteryModelIntegrated extends Application {
         System.out.println(studentPath);
         System.out.println(checkMarkFilePath);
       }
+      chartScene = new Scene(createChart1(), 900,900);
+        chartScene2 = new Scene(createChart2(), 900,900);
+    
+        chartScene.getStylesheets().add(getClass().getResource("grid-with-borders.css").toExternalForm());
+        chartScene2.getStylesheets().add(getClass().getResource("grid-with-borders.css").toExternalForm());
+        window.setScene(chartScene);
       
-      
+      /*
       else {
         int index = student_index_Finder(studentName, MainFolderPath, student_csv_Storer);
-      String studentPath = student_Finder(index, MainFolderPath, student_csv_Storer);
+        String studentPath = student_Finder(index, MainFolderPath, student_csv_Storer);
       try {
         checkMarkFilePath = student_chart_Reader(studentPath, index, student_csv_Storer, student_Check_Storer);
       }
@@ -342,6 +344,7 @@ public class MasteryModelIntegrated extends Application {
         System.out.println(studentPath);
         System.out.println(checkMarkFilePath);
       }
+      */
     });
     
     //check button
@@ -806,7 +809,7 @@ public class MasteryModelIntegrated extends Application {
     textSetter();
     
     
-    System.out.println(student_Check_Storer.size());
+    System.out.println("chart array length is " + student_Check_Storer.size());
    
     
     //returns created borderPane layout 
