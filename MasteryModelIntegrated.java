@@ -66,6 +66,7 @@ public class MasteryModelIntegrated extends Application {
   static boolean combined;
   static boolean[] firstTime = new boolean[1];
   static boolean[] openedFirst = new boolean[1];
+  static boolean[] initPressed = new boolean[1];
   
   //Labels arrays
   static ArrayList <String> leftLabels1 = new ArrayList<String>();
@@ -257,6 +258,7 @@ public class MasteryModelIntegrated extends Application {
   
   //______________________________________________________________________________________________________________________________________
   public static void main(String[] args) throws IOException {
+    initPressed[0] = false;
     //needed for submitting
     openedFirst[0] = true;
     //needed for saving textfields
@@ -265,15 +267,9 @@ public class MasteryModelIntegrated extends Application {
     //Calls the main folder creator method
     mainFolderCreator(MainFolderPath); 
     
-    //Calls the student_csv_Storer method
-    student_info_Storer(MainFolderPath, student_csv_Storer); 
-    //Calls the chart template storer method
-    chart_template_Storer(MainFolderPath, chart_template_Storer); 
-    //Calls method that creates a folder for each student
-    student_Folder_Creator(MainFolderPath, student_csv_Storer); 
     
-    //Calls method that creates a file in each student's folder
-    //student_chart_Initializer(MainFolderPath, student_csv_Storer, chart_template_Storer); 
+    
+   
     
     //Starts up GUI
     launch(args); 
@@ -286,13 +282,45 @@ public class MasteryModelIntegrated extends Application {
     
     //init Button
     initButton.setOnAction(e -> { 
-      nameFilePath = nameGetter();
-      chartFilePath = chartGetter();
-      
+      try {
+        nameFilePath = nameGetter();
+        fileMover(MainFolderPath, nameFilePath, "Student_Info.csv");
+        chartFilePath = chartGetter();
+        fileMover(MainFolderPath, chartFilePath, "Assessment_Chart.csv");
+      }
+      catch (IOException e2) {
+        System.out.println("moving name and chart file to mm folder error");
+      }
+      initPressed[0] = true;
     });
     
     //edit Button
-    editButton.setOnAction(e -> nameScener());
+    editButton.setOnAction(e -> {
+      
+      try {
+        //Calls the student_csv_Storer method
+        student_info_Storer(MainFolderPath, student_csv_Storer); 
+        //Calls the chart template storer method
+        chart_template_Storer(MainFolderPath, chart_template_Storer); 
+        //Calls method that creates a folder for each student
+        student_Folder_Creator(MainFolderPath, student_csv_Storer); 
+      }
+      catch (IOException e2) {
+        System.out.println("init error");
+      }
+      if (initPressed[0] == true){
+        try{
+          //Calls method that creates a file in each student's folder
+          student_chart_Initializer(MainFolderPath, student_csv_Storer, chart_template_Storer);
+          initPressed[0] = false;
+        }
+        catch (IOException e3){
+          System.out.println("Init 2 error");
+        }
+      }
+      nameScene = new Scene(VBoxDropDown(), 300, 350);
+      nameScener();
+    });
     
     //Submit name button 
     submitNameButton.setOnAction(e -> { 
@@ -436,7 +464,7 @@ public class MasteryModelIntegrated extends Application {
     
     //Scene
     initScene = new Scene(initVBox(), 300, 250);
-    nameScene = new Scene(VBoxDropDown(), 300, 350);
+    
     
     //chart scenes
     
@@ -524,6 +552,7 @@ public class MasteryModelIntegrated extends Application {
         
       
     }
+    System.out.println("the size of the name arraylist is " + student_csv_Storer.size()); 
     
     
     nameList.setOnAction(e -> { 
