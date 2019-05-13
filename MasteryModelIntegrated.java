@@ -858,7 +858,15 @@ public class MasteryModelIntegrated extends Application {
     }
     //Saves textfield inputs to a string ArrayList
     for (int i = 0; i < textFields.size(); i++) {
+      textFields.get(i).setText(textFields.get(i).getText().replace("\u2713", "0")); 
+      textFields.get(i).setText(textFields.get(i).getText().replace("\u2717", "1"));
+      textFields.get(i).setText(textFields.get(i).getText().replace("\u237B", "2"));
+      
       savedText.set(i, textFields.get(i).getText().split(" "));
+      
+      textFields.get(i).setText(textFields.get(i).getText().replace("0", "\u2713")); 
+      textFields.get(i).setText(textFields.get(i).getText().replace("1", "\u2717"));
+      textFields.get(i).setText(textFields.get(i).getText().replace("2", "\u237B"));
       System.out.println(savedText.get(i)[0]);
     }
     
@@ -885,6 +893,9 @@ public class MasteryModelIntegrated extends Application {
   public void textSetter() {
     for (int i = 0; i < student_Check_Storer.size(); i++) {
       for (int j = 0; j < student_Check_Storer.get(i).length; j++) {
+        student_Check_Storer.get(i)[j] = student_Check_Storer.get(i)[j].replace("0", "\u2713");
+        student_Check_Storer.get(i)[j] = student_Check_Storer.get(i)[j].replace("1","\u2717");
+        student_Check_Storer.get(i)[j] = student_Check_Storer.get(i)[j].replace("2", "\u237B");
         textFields.get(i).setText(student_Check_Storer.get(i)[j]);
       }
     }
