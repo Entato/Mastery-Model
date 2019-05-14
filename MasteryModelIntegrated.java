@@ -281,17 +281,20 @@ public class MasteryModelIntegrated extends Application {
     window.setTitle("Physics Mastery Model Chart Creator");
     
     //init Button
-    initButton.setOnAction(e -> { 
-      try {
-        nameFilePath = nameGetter();
-        fileMover(MainFolderPath, nameFilePath, "Student_Info.csv");
-        chartFilePath = chartGetter();
-        fileMover(MainFolderPath, chartFilePath, "Assessment_Chart.csv");
+    initButton.setOnAction(e -> {
+      boolean cont = confirmInit.initDisplay();
+      if (cont) {
+        try {
+          nameFilePath = nameGetter();
+          fileMover(MainFolderPath, nameFilePath, "Student_Info.csv");
+          chartFilePath = chartGetter();
+          fileMover(MainFolderPath, chartFilePath, "Assessment_Chart.csv");
+        }
+        catch (IOException e2) {
+          System.out.println("moving name and chart file to mm folder error");
+        }
+        initPressed[0] = true;
       }
-      catch (IOException e2) {
-        System.out.println("moving name and chart file to mm folder error");
-      }
-      initPressed[0] = true;
     });
     
     //edit Button
