@@ -1,3 +1,4 @@
+//Imports 
 import java.lang.String;
 import java.util.*;
 import java.awt.Desktop;
@@ -17,9 +18,8 @@ import java.util.logging.Logger;
 import javafx.stage.FileChooser;
 import java.nio.file.*;
 import java.io.*;
-import java.util.*;
 
-
+//class name
 public class MasteryModelIntegrated extends Application {
   
   //GUI global variables
@@ -291,6 +291,8 @@ public class MasteryModelIntegrated extends Application {
     //init Button
     initButton.setOnAction(e -> {
       //this boolean is returned from seperate class that asks the user if they are sure if they want to initialize
+      //calls upon the confirmInit class which opens up a popup window 
+      //depending on the outcome, will return boolean and will either continue with intialization or cancel it. refer to confirmInit class for details
       boolean cont = confirmInit.initDisplay();
       if (cont) {
         //all IO methods need try and catch statements
@@ -305,7 +307,7 @@ public class MasteryModelIntegrated extends Application {
         }
         initPressed[0] = true;
       }
-      //if cont is false, nothing happens
+      //if cont is false, nothing happens, and user is still on the home scene
     });
     
     //edit Button
